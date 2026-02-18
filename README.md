@@ -9,7 +9,7 @@
 
 This repository contains the Google Earth Engine (GEE) framework used to generate baseline unsupervised land cover classifications for phase I of my **"Peatlands in Transition"** Master's Project.
 
-The objective of this script is to identify and delineate **forest-peatland transition zones** in the cloud-prone, data-scarce region of the Seno Obstruccion in Southern Patagonia. By leveraging multi-temporal Sentinel-2 imagery and topographic data, the goal of this model is to distinguish general land cover in the region using unsupervised machine learning, with the ultimate goal of creating a model which can distingusih *Nothofagus* forests, Sphagnum peatlands, cushion bogs, and water bodies after ground truthing in further phases.
+The objective of this initial script is to identify and delineate broad **land cover zones** in the cloud-prone, data-scarce region of the Seno Obstruccion in Southern Patagonia. By leveraging multi-temporal Sentinel-2 imagery and topographic data, this model distinguishs land cover type in the region using unsupervised machine learning. The ultimate goal of this project is creating a model which can distingusih *Nothofagus* forests, Sphagnum peatlands, cushion bogs, and water bodies after ground truthing in further phases.
 
 ## Key Features
 
