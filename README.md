@@ -48,12 +48,8 @@ The model is trained on a 17-band stack designed to capture structure, moisture,
 ### Prerequisites
 To run this script, you must have a valid Google Earth Engine account.
 
-1.  **Clone the Repository:**
-    ```bash
-    git clone [https://github.com/your-username/peatlands-transition.git](https://github.com/your-username/peatlands-transition.git)
-    ```
-2.  **Import to Earth Engine:**
+1.  **Import to Earth Engine:**
     Copy the contents of `script.js` into the GEE Code Editor.
-3.  **Define ROI:**
+2.  **Define ROI:**
     You must define a geometry polygon named `ProposedArea` in the import section of the script covering the Seno Obstrucción region.
 
