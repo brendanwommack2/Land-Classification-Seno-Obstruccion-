@@ -1,55 +1,170 @@
-# Peatlands in Transition: Unsupervised Classification Framework
+# Peatlands in Transition: Land Cover Classification Framework
 
 **Author:** Joel Brendan Wommack  
 **Affiliation:** University of Michigan School for Environment and Sustainability (SEAS)  
 **Partner Organization:** Fundación Planeta Agua  
-**Region:** Seno Obstrucción, Southern Patagonia, Chile
+**Region:** Seno Obstrucción, Southern Patagonia, Chile  
+
+---
 
 ## Project Overview
 
-This repository contains the Google Earth Engine (GEE) framework used to generate baseline unsupervised land cover classifications for phase I of my **"Peatlands in Transition"** Master's Project.
+This repository contains a set of **Google Earth Engine (GEE) classification workflows** developed for Phase I of the **“Peatlands in Transition”** Master’s Project.
 
-The objective of this initial script is to identify and delineate broad **land cover zones** in the cloud-prone, data-scarce region of the Seno Obstruccion in Southern Patagonia. By leveraging multi-temporal Sentinel-2 imagery and topographic data, this model distinguishs land cover type in the region using unsupervised machine learning. The ultimate goal of this project is creating a model which can distingusih *Nothofagus* forests, Sphagnum peatlands, cushion bogs, and water bodies after ground truthing in further phases.
+The objective of this work is to establish **baseline land cover maps** for a remote, cloud-prone, and data-scarce region of Southern Patagonia, with particular emphasis on distinguishing **peatland systems** from surrounding forest, grassland, and barren landscapes.
 
-## Key Features
+The repository documents the methodological progression from exploratory **unsupervised pixel-based clustering**, through **object-based segmentation**, to a final **supervised Random Forest classification** informed by manually delineated training polygons. Later project phases will incorporate ground-truth data and ecological validation.
 
-* **Phenological Filtering:** Utilizes a specific Austral Summer growing season (Oct 2023 – Feb 2024) to maximize vegetation spectral separability.
-* **Advanced Feature Engineering:**
-    * **Spectral Indices:** NDVI, NDMI, EVI.
-    * **Tasseled Cap Wetness:** Specifically implemented to detect saturated peat soils.
-    * **Temporal Statistics:** Standard deviation, Min/Max, and Amplitude of moisture/vegetation indices to capture seasonal dynamics.
-* **Topographic Normalization:** Integrates SRTM DEM data with normalized slope to distinguish topogenic peat basins from forested slopes.
-* **Post-Processing:** Applies morphological spatial filtering (Focal Mode) to reduce the "salt-and-pepper" effect common in pixel-based classification.
+---
 
-## Methodology
+## Repository Structure
 
-### 1. Data Pre-processing
-* **Collection:** `COPERNICUS/S2_SR_HARMONIZED` (Sentinel-2 Surface Reflectance).
-* **Masking:** Aggressive cloud and shadow masking using the Scene Classification Layer (SCL).
-* **Compositing:** Median temporal composite to remove transient noise and atmospheric artifacts.
+The project currently includes three primary classification workflows:
 
-### 2. Feature Stack
-The model is trained on a 17-band stack designed to capture structure, moisture, and topography:
+### 1. Pixel-Based Unsupervised Classification (K-Means)
+- Multi-temporal Sentinel-2 median composite  
+- Spectral, temporal, and topographic feature stack  
+- Weka K-Means clustering  
+- Spatial smoothing to reduce pixel noise  
 
-| Category | Bands/Metrics | Purpose |
-| :--- | :--- | :--- |
-| **Spectral** | B2, B3, B4, B8, B11, B12 | Base reflectance |
-| **Indices** | NDVI, EVI, NDMI, Wetness | Vegetation health & soil saturation |
-| **Topography** | Slope (Normalized 0-1) | Distinguishing valley-bottom bogs |
-| **Temporal** | NDMI_std, NDVI_amp | Separating permanent vs. seasonal features |
+### 2. Object-Based Unsupervised Classification (SNIC)
+- Image segmentation using SNIC superpixels  
+- Mean spectral and index features computed per object  
+- K-Means clustering applied to landscape objects rather than pixels  
+- Produces ecologically meaningful spatial units and reduces salt-and-pepper effects  
 
-### 3. Clustering
-* **Algorithm:** Weka K-Means (Unsupervised).
-* **Classes:** 10 (tuned to capture subtle ecotonal gradients).
-* **Sampling:** 5,000 pixels sampled from the `ProposedArea` ROI.
+### 3. Supervised Classification (Random Forest)
+- Training polygons representing known land cover types  
+- Random Forest classifier with internal validation  
+- Final smoothed land cover map suitable for analysis and export  
+
+---
+
+## Target Land Cover Classes
+
+| Class ID | Land Cover Type |
+|----------|----------------|
+| 0 | Water |
+| 1 | Wetland / Peatland |
+| 2 | Forest |
+| 3 | Grassland / Shrub |
+| 4 | Barren / Exposed |
+
+---
+
+## Data Sources
+
+- **Satellite Imagery:** Sentinel-2 Surface Reflectance  
+  `COPERNICUS/S2_SR_HARMONIZED`
+- **Topography:** SRTM DEM  
+  `USGS/SRTMGL1_003`
+- **Time Period:** Austral growing season (October 2023 – February 2024)
+
+---
+
+## Feature Engineering
+
+All workflows are built on a consistent, ecologically informed feature stack.
+
+### Spectral Bands
+- B2 (Blue)  
+- B3 (Green)  
+- B4 (Red)  
+- B8 (NIR)  
+- B11 (SWIR1)  
+- B12 (SWIR2)  
+
+### Spectral Indices
+- **NDVI** – Vegetation vigor  
+- **NDMI** – Canopy and soil moisture  
+- **EVI** – Vegetation structure and biomass  
+- **Tasseled Cap Wetness** – Soil saturation and peatland detection  
+
+### Temporal Metrics
+- NDMI standard deviation  
+- NDVI minimum / maximum / amplitude  
+- NDMI minimum / maximum  
+
+### Topographic Metrics
+- Normalized slope (0–1) derived from SRTM DEM  
+
+---
+
+## Methodology Summary
+
+### 1. Pre-Processing
+- Cloud and shadow masking using Sentinel-2 Scene Classification Layer (SCL)  
+- Median compositing to reduce atmospheric noise and transient artifacts  
+
+### 2. Feature Stacking
+- All spectral, index, temporal, and terrain layers combined into a single composite image  
+
+### 3. Classification Approaches
+
+#### Pixel-Based (Exploratory)
+- Weka K-Means clustering  
+- Useful for pattern discovery and feature testing  
+
+#### Object-Based (SNIC)
+- Superpixel segmentation at ~30–60 m scale  
+- Mean features per object  
+- Reduces noise and improves spatial coherence  
+
+#### Supervised (Final Mapping)
+- Random Forest classifier  
+- 70/30 train–test split  
+- Accuracy assessment using:
+  - Confusion matrix  
+  - Overall accuracy  
+  - Kappa statistic  
+
+---
 
 ## Usage
 
 ### Prerequisites
-To run this script, you must have a valid Google Earth Engine account.
+- Active Google Earth Engine account  
 
-1.  **Import to Earth Engine:**
-    Copy the contents of `script.js` into the GEE Code Editor.
-2.  **Define ROI:**
-    You must define a geometry polygon named `ProposedArea` in the import section of the script covering the Seno Obstrucción region.
+### Running the Scripts
 
+1. Import scripts into the GEE Code Editor  
+2. Define the study area as a geometry named `ProposedArea`  
+3. Import training feature collections for supervised classification:
+   - `features_water`
+   - `features_wetland`
+   - `features_forest`
+   - `features_grasslandshrub`
+   - `features_barren`
+4. Run the desired workflow (unsupervised, object-based, or supervised)
+
+---
+
+## Outputs
+
+- Pixel-based cluster maps  
+- Object-based segmentation maps  
+- Supervised land cover classification raster  
+- Accuracy metrics (confusion matrix, overall accuracy, Kappa)  
+- Export-ready GeoTIFF outputs for GIS analysis  
+
+---
+
+## Project Status
+
+### Phase I – Complete
+- Feature engineering finalized  
+- Multiple classification paradigms tested  
+- Baseline land cover map produced  
+
+### Next Phases
+- Field validation and ground truthing  
+- Peatland sub-type differentiation  
+- Temporal change detection  
+- Hydrological and carbon-focused analyses  
+
+---
+
+## License
+
+This project is developed for academic and conservation research purposes.  
+Please cite appropriately if adapting or extending this framework.
