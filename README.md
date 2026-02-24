@@ -9,9 +9,9 @@
 
 ## Project Overview
 
-This repository contains a set of **Google Earth Engine (GEE) classification workflows** developed for Phase I of the **“Peatlands in Transition”** Master’s Project.
+This repository contains a set of **Google Earth Engine (GEE) classification workflows** developed for potential use in Phase I of the **“Peatlands in Transition”** Master’s Project.
 
-The objective of this work is to establish **baseline land cover maps** for a remote, cloud-prone, and data-scarce region of Southern Patagonia, with particular emphasis on distinguishing **peatland systems** from surrounding forest, grassland, and barren landscapes.
+The objective of this work is to explore techniques for the creation of **baseline land cover maps** for a remote, cloud-prone, and data-scarce region of Southern Patagonia, with particular emphasis on distinguishing **peatland systems** from surrounding forest, grassland, and barren landscapes.
 
 The repository documents the methodological progression from exploratory **unsupervised pixel-based clustering**, through **object-based segmentation**, to a final **supervised Random Forest classification** informed by manually delineated training polygons. Later project phases will incorporate ground-truth data and ecological validation.
 
@@ -151,12 +151,8 @@ All workflows are built on a consistent, ecologically informed feature stack.
 
 ## Project Status
 
-### Phase I – Complete
-- Feature engineering finalized  
-- Multiple classification paradigms tested  
-- Baseline land cover map produced  
-
 ### Next Phases
+- Choose model
 - Field validation and ground truthing  
 - Peatland sub-type differentiation  
 - Temporal change detection  
